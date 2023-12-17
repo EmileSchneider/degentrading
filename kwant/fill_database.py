@@ -5,7 +5,7 @@ import psycopg2
 import requests
 from psycopg2.extras import execute_values
 
-from kwant.dataloader import scrape
+from dataloader import scrape
 
 
 def bulk_insert_ohlcv(data, market_pair_id, connection_params):

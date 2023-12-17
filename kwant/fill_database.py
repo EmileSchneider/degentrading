@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     cursor = conn.cursor()
 
-    cursor.execute("""CREATE TABLE exchanges (
+    cursor.execute("""CREATE TABLE IF NOT EXISTS exchanges (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     url VARCHAR(255),
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE cryptocurrencies (
+CREATE TABLE IF NOT EXISTS cryptocurrencies (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
     symbol VARCHAR(50) NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE cryptocurrencies (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE market_pairs (
+CREATE TABLE IF NOT EXISTS market_pairs (
     id SERIAL PRIMARY KEY,
     base_currency_id INTEGER NOT NULL,
     quote_currency_id INTEGER NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE market_pairs (
 
 CREATE TYPE timeframe_enum AS ENUM ('1m', '5m', '15m', '30m', '1h', '4h', '12h', '1d', '1w', '1M');
 
-CREATE TABLE ohlcv (
+CREATE TABLE IF NOT EXISTS ohlcv (
     id SERIAL PRIMARY KEY,
     market_pair_id INTEGER NOT NULL,
     data_type VARCHAR(50) NOT NULL,

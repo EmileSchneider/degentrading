@@ -78,17 +78,18 @@ ORDER BY
 
 
 WITH DailyRecords AS (
-    SELECT
-        market_pair_id,
-        COUNT(*) AS total_days
-    FROM
-        ohlcv
-    WHERE
-        timeframe = '1d'
-    GROUP BY
-        market_pair_id
-    HAVING
-        COUNT(*) >= 365
+    SELECT mp.id,
+       mp.symbol
+FROM
+    market_pairs mp
+JOIN
+    ohlcv ON mp.id = ohlcv.market_pair_id
+WHERE
+    ohlcv.open_time >= (CURRENT_DATE - INTERVAL '365 days')
+GROUP BY
+    mp.id, mp.symbol
+HAVING
+    COUNT(DISTINCT ohlcv.open_time) >= 365
 )
 
 SELECT
@@ -100,7 +101,7 @@ FROM
 JOIN
     ohlcv ON mp.id = ohlcv.market_pair_id
 JOIN
-    DailyRecords dr ON mp.id = dr.market_pair_id
+    DailyRecords dr ON mp.id = dr.id
 WHERE
     ohlcv.timeframe = '1d'
     AND ohlcv.open_time >= '2022-01-01'
@@ -116,3 +117,77 @@ GROUP BY
     mp.id, mp.symbol
 ORDER BY
     avg_daily_volume DESC limit 50;
+
+
+
+
+
+
+
+WITH SelectedSymbols as(
+    WITH DailyRecords AS (
+    SELECT mp.id,
+       mp.symbol
+FROM
+    market_pairs mp
+JOIN
+    ohlcv ON mp.id = ohlcv.market_pair_id
+WHERE
+    ohlcv.open_time >= (CURRENT_DATE - INTERVAL '365 days')
+GROUP BY
+    mp.id, mp.symbol
+HAVING
+    COUNT(DISTINCT ohlcv.open_time) >= 365
+)
+
+SELECT
+    mp.id,
+    mp.symbol,
+    AVG(ohlcv.volume) as avg_daily_volume
+FROM
+    market_pairs mp
+JOIN
+    ohlcv ON mp.id = ohlcv.market_pair_id
+JOIN
+    DailyRecords dr ON mp.id = dr.id
+WHERE
+    ohlcv.timeframe = '1d'
+    AND ohlcv.open_time >= '2022-01-01'
+    AND (
+        mp.symbol NOT LIKE '%UP%'
+        AND mp.symbol NOT LIKE '%DOWN%'
+        AND mp.symbol NOT LIKE '%BULL%'
+        AND mp.symbol NOT LIKE '%BEAR%'
+        AND mp.symbol NOT LIKE '%BUSD%'
+        AND mp.symbol NOT LIKE '%USDC%'
+    ) AND mp.symbol LIKE '%BTC'
+GROUP BY
+    mp.id, mp.symbol
+ORDER BY
+    avg_daily_volume DESC limit 50
+)
+SELECT
+    ss.symbol,
+    ohlcv.open_time,
+    ohlcv.close_price
+
+FROM
+    ohlcv
+JOIN
+    SelectedSymbols ss ON ohlcv.market_pair_id = ss.id
+WHERE
+    ohlcv.timeframe = '1d'
+    AND ohlcv.open_time >= (CURRENT_DATE - INTERVAL '75 days')
+ORDER BY
+    ss.symbol, ohlcv.open_time DESC;
+
+
+
+
+
+
+
+
+
+
+

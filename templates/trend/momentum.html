@@ -1,0 +1,39 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+    <h2>Momentum Rankings</h2>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Rank</th>
+            <th scope="col">Coin</th>
+            <th scope="col">Binance</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rank in ranking %}
+            {% if forloop.counter <= 5 %}
+                <tr class="table-success">  <!-- Apply special class for first and last 5 rows -->
+                    <th>{{ forloop.counter }}</th>
+                    <th scope="row">{{ rank }}</th>
+                    <th><a href="https://www.binance.com/en/trade/{{ rank }}?type=spot" target="_blank">Trade</a></th>
+                </tr>
+            {% elif forloop.revcounter <= 5 %}
+                <tr class="table-danger">
+                    <th>{{ forloop.counter }}</th>
+                    <th scope="row">{{ rank }}</th>
+                    <th><a href="https://www.binance.com/en/trade/{{ rank }}?type=spot" target="_blank">Trade</a></th>
+                </tr>
+            {% else %}
+                <tr class="table-active">
+                    <th>{{ forloop.counter }}</th>
+                    <th scope="row">{{ rank }}</th>
+                    <th><a href="https://www.binance.com/en/trade/{{ rank }}?type=spot" target="_blank">Trade</a></th>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

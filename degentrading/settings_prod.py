@@ -1,8 +1,8 @@
-from .settings import *
+from settings import *
+
 DEBUG = False
 
-
-ALLOWED_HOSTS = ["52.146.4.242"]
+ALLOWED_HOSTS = ["172.160.248.98"]
 
 DATABASES = {
     'default': {

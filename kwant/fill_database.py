@@ -92,7 +92,8 @@ CREATE TABLE IF NOT EXISTS market_pairs (
     FOREIGN KEY (exchange_id) REFERENCES exchanges (id)
 );
 
-CREATE TYPE timeframe_enum AS ENUM ('1m', '5m', '15m', '30m', '1h', '4h', '12h', '1d', '1w', '1M');
+
+CREATE TYPE  timeframe_enum AS ENUM ('1m', '5m', '15m', '30m', '1h', '4h', '12h', '1d', '1w', '1M');
 
 CREATE TABLE IF NOT EXISTS ohlcv (
     id SERIAL PRIMARY KEY,

@@ -21,11 +21,11 @@ def get_momentum_ranking():
     JOIN
         ohlcv ON mp.id = ohlcv.market_pair_id
     WHERE
-        ohlcv.open_time >= (CURRENT_DATE - INTERVAL '365 days')
+        ohlcv.open_time >= (TIMESTAMP WITH TIME ZONE '2023-01-01 00:00:00+00')
     GROUP BY
         mp.id, mp.symbol
     HAVING
-        COUNT(DISTINCT ohlcv.open_time) >= 365
+        COUNT(DISTINCT ohlcv.open_time) >= 330
     )
 
     SELECT
@@ -65,7 +65,10 @@ def get_momentum_ranking():
         SelectedSymbols ss ON ohlcv.market_pair_id = ss.id
     WHERE
         ohlcv.timeframe = '1d'
-        AND ohlcv.open_time >= (CURRENT_DATE - INTERVAL '75 days')
+    AND
+        ohlcv.open_time >= ((CURRENT_DATE - EXTRACT(DOW FROM CURRENT_DATE)::INTEGER) - INTERVAL '75 days')
+    AND 
+       ohlcv.open_time <= CURRENT_DATE - EXTRACT(DOW FROM CURRENT_DATE)::INTEGER
     ORDER BY
         ss.symbol, ohlcv.open_time DESC;"""
 
